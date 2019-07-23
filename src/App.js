@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React                 from 'react';
+import { connect, Provider } from 'react-redux';
+import store                 from './store';
+import configure             from './useSynchronisedStore';
+
+configure(store);
+
+const dispatchToProps = (dispatch) => ({
+    incrementClick: () => dispatch({ type: 'increment_clicks' }),
+});
+
+const stateToProps = (state) => ({
+    clickCount: state.clickCount,
+});
+
+const AppContent = connect(stateToProps, dispatchToProps)(({ clickCount, incrementClick }) => {
+    return (
+        <div>
+            <div>
+                Clicked { clickCount }
+            </div>
+            <button type='button' onClick={ () => incrementClick() }>
+                Increment
+            </button>
+        </div>
+    );
+});
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <Provider store={ store }>
+            <AppContent />
+        </Provider>
+    );
 }
 
 export default App;
